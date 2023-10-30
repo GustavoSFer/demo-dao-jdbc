@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import db.DB;
 import db.DbException;
 import model.dao.SellerDao;
@@ -90,6 +93,48 @@ public class SellerDaoJDBC implements SellerDao {
   public List<Seller> findAll() {
     // TODO Auto-generated method stub
     return null;
+  }
+
+  @Override
+  public List<Seller> findByDepartament(Departament dep) {
+    PreparedStatement st = null;
+    ResultSet rs = null;
+
+    try {
+      st = conn.prepareStatement("SELECT seller.*,departament.Nome as DepName "
+          + "FROM seller INNER JOIN departament " + "ON seller.DepartamentId = departament.id "
+          + "WHERE DepartamentId = ? " + "ORDER BY Nome");
+
+      // Colocando o valor na nossa primeira '?'
+      st.setInt(1, dep.getId());
+
+      rs = st.executeQuery();
+
+      // O resultado pode ser mais de um valor. Sendo assim, vamos salvar em uma lista
+      List<Seller> list = new ArrayList<>();
+
+      // Vamos criar um Map para salvar o departamento e assim verificar se ele ja existe. Para não
+      // criar novos na memória.
+      Map<Integer, Departament> map = new HashMap<>();
+
+      while (rs.next()) {
+        Departament departament = map.get(rs.getInt("DepartamentId"));
+
+        if (departament == null) {
+          departament = instantiateDepartamento(rs);
+          map.put(rs.getInt("departamentId"), departament);
+        }
+
+        Seller seller = instantiateSeller(rs, departament);
+        list.add(seller);
+      }
+      return list;
+    } catch (SQLException e) {
+      throw new DbException(e.getMessage());
+    } finally {
+      DB.closeResultSet(rs);
+      DB.closeStatement(st);
+    }
   }
 
 }
