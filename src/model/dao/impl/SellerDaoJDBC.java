@@ -51,17 +51,9 @@ public class SellerDaoJDBC implements SellerDao {
       rs = st.executeQuery();
       // o retono da nossa busca sempre vem na posição 0 mas se estiver info. esta na posição 0
       if (rs.next()) { // Se existir informação na proxima linha (1)
-        Departament departament = new Departament();
-        departament.setId(rs.getInt("departamentId"));
-        departament.setName(rs.getString("DepName"));
+        Departament departament = instantiateDepartamento(rs);
 
-        Seller seller = new Seller();
-        seller.setId(rs.getInt("id"));
-        seller.setName(rs.getString("nome"));
-        seller.setEmail(rs.getString("email"));
-        seller.setBirthDate(rs.getDate("birthDate"));
-        seller.setBaseSalary(rs.getDouble("baseSalary"));
-        seller.setDepartament(departament);
+        Seller seller = instantiateSeller(rs, departament);
 
         return seller;
       }
@@ -72,6 +64,26 @@ public class SellerDaoJDBC implements SellerDao {
       DB.closeResultSet(rs);
       DB.closeStatement(st);
     }
+  }
+
+  private Seller instantiateSeller(ResultSet rs, Departament departament) throws SQLException {
+    Seller seller = new Seller();
+    seller.setId(rs.getInt("id"));
+    seller.setName(rs.getString("nome"));
+    seller.setEmail(rs.getString("email"));
+    seller.setBirthDate(rs.getDate("birthDate"));
+    seller.setBaseSalary(rs.getDouble("baseSalary"));
+    seller.setDepartament(departament);
+
+    return seller;
+  }
+
+  private Departament instantiateDepartamento(ResultSet rs) throws SQLException {
+    Departament departament = new Departament();
+    departament.setId(rs.getInt("departamentId"));
+    departament.setName(rs.getString("DepName"));
+
+    return departament;
   }
 
   @Override
