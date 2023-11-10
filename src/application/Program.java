@@ -44,7 +44,7 @@ public class Program {
 
 
     System.out.println("\n===TEST: DELETE ===");
-    sellerDao.deleteById(2);
+    sellerDao.deleteById(6);
   }
 
 }

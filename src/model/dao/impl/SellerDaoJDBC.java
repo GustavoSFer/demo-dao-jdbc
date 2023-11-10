@@ -70,7 +70,13 @@ public class SellerDaoJDBC implements SellerDao {
 
       st.setInt(1, id);
 
-      st.execute();
+      int linhasAlteradas = st.executeUpdate();
+
+      if (linhasAlteradas > 0) {
+        System.out.println("foram alterado(s) " + linhasAlteradas + " linhas no banco!");
+      } else {
+        System.out.println("Nenhuma linha alterada!");
+      }
 
 
     } catch (SQLException e) {
