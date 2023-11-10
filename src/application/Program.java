@@ -42,6 +42,9 @@ public class Program {
     sellerDao.insert(newSeller);
     System.out.println("Id gerado: " + newSeller.getId());
 
+
+    System.out.println("\n===TEST: DELETE ===");
+    sellerDao.deleteById(2);
   }
 
 }
