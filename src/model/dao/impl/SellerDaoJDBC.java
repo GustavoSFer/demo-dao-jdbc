@@ -57,7 +57,28 @@ public class SellerDaoJDBC implements SellerDao {
 
   @Override
   public void update(Seller obj) {
-    // TODO Auto-generated method stub
+    PreparedStatement st = null;
+    try {
+      st = conn.prepareStatement(
+          "UPDATE seller SET nome = ?, email = ?, birthDate = ?, baseSalary = ?, departamentId = ? WHERE seller.id = ?");
+      st.setString(1, obj.getName());
+      st.setString(2, obj.getEmail());
+      st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+      st.setDouble(4, obj.getBaseSalary());
+      st.setInt(5, obj.getDepartament().getId());
+      st.setInt(6, obj.getId());
+
+      int row = st.executeUpdate();
+
+      if (row > 0) {
+        System.out.println("Update realizado com sucesso!");
+      }
+
+    } catch (SQLException e) {
+      throw new DbException(e.getMessage());
+    } finally {
+      DB.closeStatement(st);
+    }
 
   }
 
@@ -75,12 +96,12 @@ public class SellerDaoJDBC implements SellerDao {
       if (linhasAlteradas > 0) {
         System.out.println("foram alterado(s) " + linhasAlteradas + " linhas no banco!");
       } else {
-        System.out.println("Nenhuma linha alterada!");
+        throw new DbException("Não existe o id informado!");
       }
-
-
     } catch (SQLException e) {
       throw new DbException(e.getMessage());
+    } finally {
+      DB.closeStatement(st);
     }
 
   }

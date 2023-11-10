@@ -43,6 +43,13 @@ public class Program {
     System.out.println("Id gerado: " + newSeller.getId());
 
 
+    System.out.println("\n===TEST: UPDATE ===");
+    Seller updateSeller = sellerDao.findById(1);
+    updateSeller.setName("Boby Brow");
+
+    sellerDao.update(updateSeller);
+
+
     System.out.println("\n===TEST: DELETE ===");
     sellerDao.deleteById(6);
   }
